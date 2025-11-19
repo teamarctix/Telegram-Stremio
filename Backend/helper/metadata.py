@@ -333,7 +333,7 @@ async def fetch_tv_metadata(title, season, episode, encoded_string, year=None, q
             "genres": [g.name for g in (tv.genres or [])],
             "media_type": "tv",
             "cast": cast,
-            "runtime": runtime,
+            "runtime": str(runtime),
 
             "season_number": season,
             "episode_number": episode,
@@ -359,7 +359,7 @@ async def fetch_tv_metadata(title, season, episode, encoded_string, year=None, q
     images = format_imdb_images(imdb_id)
 
     return {
-        "tmdb_id": imdb.get("moviedb_id"),
+        "tmdb_id": imdb.get("moviedb_id") or imdb_id.replace("tt", ""),
         "imdb_id": imdb_id,
         "title": imdb.get("title", title),
         "year": imdb.get("releaseDetailed", {}).get("year", 0),
@@ -369,7 +369,7 @@ async def fetch_tv_metadata(title, season, episode, encoded_string, year=None, q
         "backdrop": images["backdrop"],
         "logo": images["logo"],
         "cast": imdb.get("cast", []),
-        "runtime": imdb.get("runtime", ""),            
+        "runtime": str(imdb.get("runtime") or ""),          
         "genres": imdb.get("genre", []),
         "media_type": "tv",
 
@@ -487,7 +487,7 @@ async def fetch_movie_metadata(title, encoded_string, year=None, quality=None, d
             "backdrop": format_tmdb_image(movie.backdrop_path, "original"),
             "logo": get_tmdb_logo(getattr(movie, "images", None)),
             "cast": cast_names,
-            "runtime": runtime,
+            "runtime": str(runtime),
             "media_type": "movie",
             "genres": [g.name for g in (movie.genres or [])],
             "quality": quality,
@@ -501,7 +501,7 @@ async def fetch_movie_metadata(title, encoded_string, year=None, quality=None, d
     imdb = imdb_details or {}
 
     return {
-        "tmdb_id": imdb.get("moviedb_id") or None,
+        "tmdb_id": imdb.get("moviedb_id") or imdb_id.replace("tt", ""),
         "imdb_id": imdb_id,
         "title": imdb.get("title", title),
         "year": imdb.get("releaseDetailed", {}).get("year", 0),
@@ -511,7 +511,7 @@ async def fetch_movie_metadata(title, encoded_string, year=None, quality=None, d
         "backdrop": images["backdrop"],
         "logo": images["logo"],
         "cast": imdb.get("cast", []),
-        "runtime": imdb.get("runtime", ""),
+        "runtime": str(imdb.get("runtime") or ""),
         "media_type": "movie",
         "genres": imdb.get("genre", []),
         "quality": quality,
